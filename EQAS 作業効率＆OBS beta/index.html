@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#111">
+<title>Tournament Tool</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-word">TOURNAMENT TOOL</div>
+    <div class="brand-sub">作成者 EQ</div>
+  </div>
+  <div class="top-actions">
+    <div class="autosave"><i></i> 自動保存</div>
+    <button class="btn ghost" id="saveProjectBtn">保存</button>
+    <button class="btn ghost" id="loadProjectBtn">読込</button>
+    <button class="btn broadcast-btn" id="openBroadcastBtn">配信用モード</button>
+    <button class="btn danger" id="resetBtn">リセット</button>
+  </div>
+</header>
+
+<main>
+  <div class="stepbar">
+    <div class="step active" data-step="1"><b>1</b><span>大会設定</span></div><div class="line"></div>
+    <div class="step" data-step="2"><b>2</b><span>チーム登録</span></div><div class="line"></div>
+    <div class="step" data-step="3"><b>3</b><span>試合入力</span></div><div class="line"></div>
+    <div class="step" data-step="4"><b>4</b><span>リザルト</span></div>
+  </div>
+
+  <section id="setupScreen" class="screen active">
+    <div class="page-title">
+      <div><p class="eyebrow">STEP 01 / TOURNAMENT SETUP</p><h1>大会設定</h1><p>大会名・ロゴ・形式・ポイントを設定します。</p></div>
+      <div class="ready-badge">準備完了</div>
+    </div>
+
+    <div class="grid two">
+      <div class="card">
+        <div class="card-head"><div><h2>基本設定</h2><p>大会名はリザルト画像にも反映されます。</p></div><span class="section-no">01</span></div>
+        <label>大会名<input id="titleInput" value="EQ Apex Scrim" maxlength="60" autocomplete="off"></label>
+        <div class="format-grid">
+          <button class="format-card selected" data-format="normal"><span>通常形式</span><b>指定試合数で終了</b><small>全試合の合計ポイントで最終順位を決定</small></button>
+          <button class="format-card" data-format="matchpoint"><span>ポーランド形式</span><b>到達ポイント方式</b><small>到達PT後、1位を取ったチームが優勝</small></button>
+        </div>
+        <label id="matchCountWrap">試合数<input id="matchCountInput" type="number" min="1" max="30" value="6"></label>
+        <div class="target-wrap"><label>到達ライン<input id="targetPointsInput" type="number" min="1" value="50"></label></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div><h2>大会ロゴ</h2><p>リザルトの右上に表示。透過PNG推奨。</p></div><span class="section-no">02</span></div>
+        <div class="logo-upload-row">
+          <label class="logo-drop"><input id="logoInput" type="file" accept="image/png,image/jpeg,image/webp"><span>＋ ロゴを選択</span></label>
+          <div id="logoPreview" class="logo-preview"><span>LOGO</span></div>
+          <button class="btn small" id="clearLogoBtn">削除</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><h2>ポイント設定</h2><p>順位ポイントとキルPTを自由に変更できます。</p></div><button class="btn small" id="defaultPointsBtn">標準に戻す</button></div>
+      <div class="points-layout">
+        <div><h3>順位ポイント <span>1～20位</span></h3><div id="placementInputs" class="placement-grid"></div></div>
+        <div><h3>キルPT</h3><div class="kill-setting"><input id="killPointInput" type="number" min="0" step="0.1" value="1"><span>PT / 1 KILL</span></div></div>
+      </div>
+    </div>
+
+    <div class="grid two">
+      <div class="card">
+        <div class="card-head"><div><h2>リザルト背景</h2><p>公式大会風のベースに重ねます。</p></div><button class="btn small" id="clearBgBtn">削除</button></div>
+        <div class="upload-row"><label class="upload"><input id="bgInput" type="file" accept="image/png,image/jpeg,image/webp"><span>背景画像を選択</span></label><div id="bgPreview" class="bg-preview">BACKGROUND</div></div>
+      </div>
+      <div class="card feature-card">
+        <div class="feature-icon">20</div><div><h2>20チーム・2列表示</h2><p>1～10位と11～20位を左右に分け、到達演出・ロゴ・累計順位まで自動生成。</p></div>
+      </div>
+    </div>
+
+    <div class="card broadcast-theme-card">
+      <div class="card-head"><div><h2>配信モードのカラー</h2><p>配信画面の雰囲気を自由に変更できます。変更は自動保存されます。</p></div><span class="section-no">03</span></div>
+      <div class="theme-controls">
+        <label>テーマカラー<input id="broadcastAccentColor" type="color" value="#d94b87"></label>
+        <span class="theme-note">黒ベース＋選択色を、枠・ライン・見出し・アニメーションまで全体に反映</span>
+        <div class="theme-presets">
+          <button class="theme-preset" data-theme="blackpink">BLACK × PINK</button>
+          <button class="theme-preset" data-theme="blackgold">BLACK × GOLD</button>
+          <button class="theme-preset" data-theme="blackred">BLACK × RED</button>
+          <button class="theme-preset" data-theme="blackblue">BLACK × BLUE</button>
+          <button class="theme-preset" data-theme="blackpurple">BLACK × PURPLE</button>
+        </div>
+      </div>
+    </div>
+    <button class="btn primary next-btn" id="toTeamsBtn">次へ：チーム登録 <span>→</span></button>
+  </section>
+
+  <section id="teamsScreen" class="screen">
+    <div class="page-title"><div><p class="eyebrow">STEP 02 / TEAM REGISTRATION</p><h1>チーム登録</h1><p>大会に参加するチーム名を登録してください。</p></div><div class="badge">最大20チーム</div></div>
+    <div class="card">
+      <div class="team-toolbar"><span id="teamCountLabel">0 / 20 チーム</span><div><button class="btn small" id="fillSampleBtn">サンプル</button><button class="btn small ghost" id="clearTeamsBtn">全消去</button></div></div>
+      <div id="teamInputs" class="team-grid"></div>
+    </div>
+    <div class="nav-row"><button class="btn ghost" id="backToSetupBtn">← 戻る</button><button class="btn primary" id="startTournamentBtn">登録完了・大会開始 <span>→</span></button></div>
+  </section>
+
+  <section id="matchScreen" class="screen">
+    <div class="match-header">
+      <div><p class="eyebrow" id="formatLabel">通常形式</p><h1 id="matchTitle">MATCH 1</h1><p id="matchProgress">1 / 6</p></div>
+      <div class="match-status"><div id="eligibleCount" class="status-chip">到達 0</div><div id="matchNotice" class="status-chip">入力待ち</div></div>
+    </div>
+    <div id="matchPointNotice" class="matchpoint-notice hidden"></div>
+
+    <div class="card">
+      <div class="input-head">
+        <div><h2>試合結果入力</h2><p>チーム・順位・キル数をすべて選択式で入力できます。</p></div>
+        <div class="right-actions"><button class="btn small ghost" id="fillRandomBtn">テスト入力</button></div>
+      </div>
+      <div class="select-help">順位は1～20位、キルは0～50キルから選択。入力するとポイントを即時計算します。</div>
+      <div id="matchInputsGrid" class="match-input-grid"></div>
+    </div>
+    <div class="nav-row"><button class="btn ghost" id="backToTeamsBtn">← チーム設定</button><div class="right-actions"><button class="btn secondary" id="previewResultBtn">リザルト確認</button><button class="btn primary" id="submitMatchBtn">このMATCHを確定 <span>→</span></button></div></div>
+  </section>
+
+  <section id="resultScreen" class="screen">
+    <div class="page-title">
+      <div><p class="eyebrow" id="resultEyebrow">MATCH RESULT</p><h1 id="resultTitle">MATCH 1 RESULT</h1><p id="resultSub">試合結果</p></div>
+      <div class="result-actions"><button class="btn secondary" id="downloadResultBtn">PNG保存</button><button class="btn ghost" id="backToMatchBtn">入力画面へ</button><button class="btn ghost hidden" id="finalResultBtn">最終結果</button><button class="btn primary" id="nextMatchBtn">次のMATCH →</button></div>
+    </div>
+
+    <div class="result-stage-card">
+      <div id="resultTableArea"></div>
+    </div>
+    <div id="cumulativeArea" class="cumulative-area"></div>
+    <div id="finalBanner" class="final-banner hidden"></div>
+    <div id="matchHistory" class="history"></div>
+  </section>
+</main>
+
+<section id="broadcastScreen" class="broadcast-screen">
+  <div class="broadcast-bg"></div>
+  <div class="broadcast-top">
+    <div></div>
+    <div class="broadcast-logo-wrap"><img id="broadcastLogo" alt="大会ロゴ"></div>
+  </div>
+  <div class="broadcast-center">
+    <div class="broadcast-kicker" id="broadcastKicker">EQAS TOURNAMENT</div>
+    <div class="broadcast-title" id="broadcastTitle">集計中です</div>
+    <div class="broadcast-sub" id="broadcastSub">RESULT IS BEING PREPARED</div>
+    <div class="broadcast-spinner"><span></span><span></span><span></span></div>
+  </div>
+  <div class="broadcast-result-wrap" id="broadcastResultWrap">
+    <div id="broadcastLiveResult" class="broadcast-live-result"></div>
+  </div>
+  <div class="broadcast-transition" id="broadcastTransition"></div>
+</section>
+
+<div id="broadcastControl" class="broadcast-control hidden">
+  <div><strong>配信用コントロール</strong><small>別ウィンドウに表示中</small></div>
+  <div class="broadcast-control-buttons">
+    <button class="btn" data-broadcast="counting">集計中</button>
+    <div class="broadcast-match-buttons" id="broadcastMatchButtons"></div>
+    <button class="btn" data-broadcast="match">現在MATCH RESULT</button>
+    <button class="btn" data-broadcast="cumulative">累計（現在）</button>
+    <button class="btn" data-broadcast="final">FINAL RESULT</button>
+    <button class="btn primary" data-broadcast="transition">切替演出</button>
+    <button class="btn" data-broadcast="matchStart">次MATCH開始</button>
+    <div class="broadcast-shortcuts">1–9: MATCH RESULT　R: 現在MATCH　C: 累計　S: 次MATCH　F: FINAL</div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+<div id="previewModal" class="modal hidden">
+  <div class="modal-box">
+    <div class="modal-head"><div><p class="eyebrow">4K UHD / 3840 × 2160</p><h2>リザルトプレビュー</h2></div><button id="closePreviewBtn">×</button></div>
+    <div class="canvas-wrap"><canvas id="resultCanvas" width="3840" height="2160"></canvas></div>
+    <div class="preview-tools"><span>大会用PNG / 4K UHD 3840 × 2160 / 高品質出力</span><button class="btn primary" id="modalDownloadBtn">PNG保存</button></div>
+  </div>
+</div>
+<input id="projectFileInput" type="file" accept=".json" hidden>
+<script src="script.js"></script>
+</body>
+</html>
